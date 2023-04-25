@@ -9,4 +9,4 @@ Files for the project:
 - 'slidescript.Rmd' code for creating the slides
 - 'index.html' with the output
 
-See the slides at https://failed-gymnast.github.io/WHI_Presentation/. 
+See the slides at [this link](https://failed-gymnast.github.io/WHI_Presentation/).
