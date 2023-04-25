@@ -1,0 +1,150 @@
+---
+title: "Analysis of the World Happiness Report"
+author: "Anna Wallace"
+institute: "SIS 750: Data Analysis"
+date: "April 7, 2023"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    nature:
+      slideNumberFormat: "%current%"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: true
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  echo = FALSE, warning = FALSE, message = FALSE,
+  fig.width = 7, fig.asp = 0.618, fig.align = 'center', out.width = '70%'
+)
+library(tidyverse)
+library(dplyr)
+library(kableExtra)
+library(patchwork)
+library(scales)
+library(knitr)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(base_color = "#43418A",
+          # fonts
+          header_font_google = google_font("Martel"),
+          text_font_google = google_font("Lato"),
+          code_font_google = google_font("Fira Mono"))
+```
+
+---
+# The Dataset
+
+World Happiness Report, 2005-Present
+- **Author:** Usama Battar on Kaggle
+- **Source:** [Sustainable Development Solutions Network](https://www.kaggle.com/datasets/usamabuttar/world-happiness-report-2005-present)
+- **Methodology:** Gallup World Poll data
+
+--
+
+This dataset has **2,199** observations of **13** variables:
+- Life Ladder
+- Corruption
+- Social Support
+
+--
+
+New variable addition: `region`
+---
+
+### Graph 1. Life Evaluation per Level of Social Support 
+```{r, include=FALSE} 
+df = read_csv('World Happiness Report.csv', na = 'NA')
+
+# filter by year and rename columns 
+
+df1 = df %>%
+  filter(Year == 2021) %>%
+  rename(country = "Country Name",
+         regionID = "Regional Indicator",
+         life_ladder = "Life Ladder",
+         gdp_per_cap = "Log GDP Per Capita",
+         soc_support = "Social Support",
+         healthy_life = "Healthy Life Expectancy At Birth",
+         freedom = "Freedom To Make Life Choices",
+         generosity = Generosity,
+         corruption = "Perceptions Of Corruption",
+         govt_confidence = "Confidence In National Government") %>%
+  select(-"Positive Affect", -"Negative Affect") %>%
+  mutate(
+    region = case_when(regionID == "Central and Eastern Europe" ~ 'Europe',
+                          regionID == "Commonwealth of Independent States" ~ 'Asia',
+                          regionID == "East Asia" ~ 'Asia',
+                          regionID == "Latin America and Caribbean" ~ 'North America',
+                          regionID == "Middle East and North Africa" ~ 'MENA',
+                          regionID == "North America and ANZ" ~ 'North America',
+                          regionID == "South Asia" ~ 'Asia',
+                          regionID == "Southeast Asia" ~ 'Asia',
+                          regionID == "Sub-Saharan Africa" ~ 'Africa',
+                          regionID == "Western Europe" ~ 'Europe')) %>%
+  relocate(region, .before = regionID)
+
+df1 = df1[complete.cases(df1$region), ]
+df1$region = as.factor(df1$region)
+
+# VIZ1
+plot1 = df1 %>%
+  ggplot(aes(x = life_ladder, y = soc_support, shape = region, color = region))+
+  geom_point(size = 3) +
+  labs(x = 'Life Ladder Rank',
+       y = 'Social Support Level') +
+  theme_minimal() +
+  theme(
+    axis.title.y = element_text(face = 'bold', color = 'mediumpurple4'),
+    axis.title.x = element_text(face = 'bold', color = 'mediumpurple4'),
+    legend.position = 'top',
+    legend.title = element_text(face = "bold", color = 'mediumpurple4'))
+```
+
+```{r plot1, out.height = '400px', out.width = '600px'}
+plot1
+```
+---
+### Graph 2. Freedom of Life Choices per Perceived Government Corruption 
+
+
+```{r, include=FALSE}
+# create second VIZ - freedom to make choices by govt corruption
+p2 = df1 %>%
+  ggplot(aes(x = freedom, y = corruption)) +
+  geom_point(size = 2, color = 'mediumpurple4') +
+  geom_smooth(se=F, color='red')+
+  labs(x = 'Freedom in Life Choices',
+       y = 'Corruption') +
+  theme_light()+
+  theme(
+    axis.title.y = element_text(face = 'bold', color = 'mediumpurple4'),
+    axis.title.x = element_text(face = 'bold', color = 'mediumpurple4'))
+  
+# facet wrap by region
+p3 = df1 %>%
+  ggplot(aes(x=freedom, y=corruption)) +
+  geom_point(color = 'mediumpurple4', alpha = (1/2), size = 3) +
+  facet_wrap(~ region) +
+  geom_smooth(lwd = 1.2, se=F, color='red') +
+  labs(x = 'Freedom in Life Choices',
+       y = 'Corruption') +
+  theme_light()+
+  theme(
+    axis.title.y = element_text(face = 'bold', color = 'mediumpurple4'),
+    axis.title.x = element_text(face = 'bold', color = 'mediumpurple4'),
+    strip.background = element_rect(fill = "mediumpurple4"))
+```
+
+```{r plot2, echo=FALSE, message=FALSE, warning=FALSE, out.height = '450px', out.width = '600px' }
+p2 / p3
+```
+
+---
+class: inverse, middle, center
+
+# Questions?
