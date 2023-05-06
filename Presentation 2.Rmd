@@ -46,14 +46,13 @@ World Happiness Report, 2005-Present
 
 --
 
-This dataset has **2,199** observations of **13** variables:
-- Life Ladder
-- Corruption
-- Social Support
+The original data set had **2,199** observations, which was comprised of the national average responses from surveys implemented in 165 countries over the span of several years. These averages measured **13** variables, with a few listed below:
+- Happiness with life score
+- Perceived levels of government corruption 
+- Levels of social support
 
---
+The following visuals were expressly generated from the data collected in 2021 (from 120 observations/countries). I cleaned the data to group the countries by region.  
 
-New variable addition: `region`
 ---
 
 ### Graph 1. Life Evaluation per Level of Social Support 
@@ -97,12 +96,15 @@ plot1 = df1 %>%
   geom_point(size = 3) +
   labs(x = 'Life Ladder Rank',
        y = 'Social Support Level') +
-  theme_minimal() +
+  theme_classic() +
   theme(
-    axis.title.y = element_text(face = 'bold', color = 'mediumpurple4'),
-    axis.title.x = element_text(face = 'bold', color = 'mediumpurple4'),
+    axis.title.y = element_text(face = 'bold', color = 'mediumpurple4', margin = margin(t = 0, r = 15, b = 0, l = 5),size=13),
+    axis.title.x = element_text(face = 'bold', color = 'mediumpurple4', margin = margin(t = 15, r = 0, b = 5, l = 0),size=13),
+    axis.text.x = element_text(size = 11),
+    axis.text.y = element_text(size = 11),
     legend.position = 'top',
-    legend.title = element_text(face = "bold", color = 'mediumpurple4'))
+    legend.text = element_text(size = 11),
+    legend.title = element_text(face = "bold", color = 'mediumpurple4', size=13))
 ```
 
 ```{r plot1, out.height = '400px', out.width = '600px'}
@@ -120,9 +122,9 @@ p2 = df1 %>%
   geom_smooth(se=F, color='red')+
   labs(x = 'Freedom in Life Choices',
        y = 'Corruption') +
-  theme_light()+
+  theme_classic()+
   theme(
-    axis.title.y = element_text(face = 'bold', color = 'mediumpurple4'),
+    axis.title.y = element_text(face = 'bold', color = 'mediumpurple4', margin = margin(t = 0, r = 15, b = 0, l = 5)),
     axis.title.x = element_text(face = 'bold', color = 'mediumpurple4'))
   
 # facet wrap by region
@@ -133,11 +135,12 @@ p3 = df1 %>%
   geom_smooth(lwd = 1.2, se=F, color='red') +
   labs(x = 'Freedom in Life Choices',
        y = 'Corruption') +
-  theme_light()+
+  theme_classic()+
   theme(
-    axis.title.y = element_text(face = 'bold', color = 'mediumpurple4'),
-    axis.title.x = element_text(face = 'bold', color = 'mediumpurple4'),
-    strip.background = element_rect(fill = "mediumpurple4"))
+    axis.title.y = element_text(face = 'bold', color = 'mediumpurple4', margin = margin(t = 0, r = 15, b = 0, l = 5)),
+    axis.title.x = element_text(face = 'bold', color = 'mediumpurple4', margin = margin(t = 15, r = 0, b = 5, l = 0)),
+    strip.background = element_rect(fill = "mediumpurple4"),
+    strip.text = element_text(color = "white"))
 ```
 
 ```{r plot2, echo=FALSE, message=FALSE, warning=FALSE, out.height = '450px', out.width = '600px' }
